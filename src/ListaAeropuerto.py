@@ -1,5 +1,133 @@
-# To change this license header, choose License Headers in Project Properties.
-# To change this template file, choose Tools | Templates
-# and open the template in the editor.
+#-------------------------------------------------------------------------------
+# Name:        Lista doble Aeropuerto
+# Purpose:
+#
+# Author:      Ben
+#
+# Created:     15/03/2015
+# Copyright:   (c) Ben 2015
+# Licence:     <your licence>
+#-------------------------------------------------------------------------------
+
+import NodoAeropuerto
+
+class ListaAeropuerto:
+
+    def __init__(self):
+        self.inicio = None
+        self.fin = None
+        self.longitud = 0
 
 
+    def estaVacia(self):
+        if self.inicio==None:
+            return True
+        else:
+             return False
+
+    def insertarInicio(self, nammm, paais, contras):
+        nuevo = NodoAeropuerto.NodoAeropuerto(nammm,paais,contras)
+        if self.estaVacia()==True:
+            self.inicio = nuevo
+            self.fin = nuevo
+            self.longitud = self.longitud + 1
+        else:
+            nuevo.Siguiente = self.inicio
+            self.inicio.Anterior = nuevo
+            self.inicio= nuevo
+            self.longitud = self.longitud + 1
+
+
+    def insertarFinal(self, nuevo):
+        if self.estaVacia()==True:
+            self.inicio=nuevo
+            self.fin=nuevo
+            self.longitud=self.longitud +1
+        else :
+            nuevo.Anterior=self.fin
+            self.fin.Siguiente=nuevo
+            self.fin=nuevo
+            self.longitud=self.longitud +1
+
+
+    def mostrarListadoAeropuerto(self):
+
+        print("***************")
+        aux = self.inicio
+        while aux!=None:
+            print(aux.verNodoAeropuerto()+" ")
+            aux = aux.Siguiente
+
+
+    def mostrarListadoAeropuertoAtras(self):
+        print("***************")
+        aux = self.fin
+        while aux!=None:
+            print(aux.verNodoAeropuerto()+" ")
+            aux = aux.Anterior
+
+
+    def borrarInicio(self):
+        if self.estaVacia()==False:
+            self.inicio = self.inicio.Siguiente
+            self.inicio.Anterior=None
+
+
+    def borrarFinal(self):
+        if self.fin.Anterior==None:
+            self.inicio=None
+            self.fin=None
+        else:
+            self.fin = self.fin.Anterior
+            self.fin.Siguiente=None
+
+
+    def buscarAeropuerto(self, nomm):
+        encontrado=None
+        auxxx = self.inicio
+        nomm=nomm.upper()
+        while auxxx!=None:
+            nomm1 = auxxx.NombreAeropuerto
+            nomm1=nomm1.upper()
+            if nomm1==nomm:
+                encontrado=auxxx
+                break
+            else :
+                auxxx=auxxx.Siguiente
+        if encontrado==None:
+            print "No se encontro el Usuario"
+        return encontrado
+
+
+    def loguearAeropuerto(self, nombreee, clave):
+        encontradoo=False
+        auxxx = self.inicio
+        ##nombreee=nombreee.upper()
+        while auxxx!=None:
+            nomm1 = auxxx.NombreAeropuerto
+            ##nomm1=nomm1.upper()
+            codd=auxxx.Contrasenia
+            if nombreee==nomm1 and clave==codd:
+                encontradoo=True
+                print "Felicidades se a podido loguear con user: "+nombreee + "  password: " + clave
+                break
+            else :
+                auxxx=auxxx.Siguiente
+        if encontradoo==False:
+            print "Verifique no se a podido loguear con user: "+nombreee + "  password: " + clave
+            print "Los datos no son correctos"
+        return encontradoo
+
+
+    def eliminarAeropuerto(self,naa):
+        aeroEliminar = self.buscarAeropuerto(naa)
+        if aeroEliminar!=None:
+            anterr = aeroEliminar.Anterior
+            poster=aeroEliminar.Siguiente
+            anterr.Siguiente=poster
+            if poster!=None:
+                poster.Anterior = anterr
+
+            self.longitud=self.longitud - 1
+        else:
+            print("No se pudo borrar")

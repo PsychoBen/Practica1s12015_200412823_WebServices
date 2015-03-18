@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Name:        Arbol AVL Usuarios
+# Name:        Arbol AVL Vuelos
 # Purpose:
 #
 # Author:      Ben
@@ -15,10 +15,11 @@ import NodoAeropuerto
 import ListaAeropuerto
 import ListaUsuario
 
-class ArbolAvlUsuario:
+class ArbolAvlVuelos:
 
     def __init__(self):
         self.Raiz=None
+        self.identi=1
         self.cantidad=0
         self.nodito=None
         self.Altur = False
@@ -40,19 +41,17 @@ class ArbolAvlUsuario:
 
 
     ##recibe el nick a buscar y el nodo raiz
-    def verificarNick(self, nickname, nodorr):
+    def verificarIdentificador(self, identificador, nodorr):
 
         Aux=nodorr
         seudonimo=False
-        nickname= nickname.upper()
         while Aux!=None:
-            userNombre= Aux.NameUsuario
-            userNombre= userNombre.upper()
-            if nickname==userNombre:
+            userId= Aux.IdUnico
+            if identificador==userId:
                 seudonimo=True
                 Aux=None
             else:
-                if nickname>userNombre:
+                if identificador>userId:
                     Aux = Aux.Derecha
                 else:
                     Aux = Aux.Izquierda
@@ -61,14 +60,14 @@ class ArbolAvlUsuario:
         return seudonimo
 
 
-    def insertarUsuario(self, Nombre, Contrasenia, NameUsuario, Direccion, Telefono, TarjetaCredito, DireccionActual):
-
-        if (self.verificarNick(NameUsuario,self.Raiz)==False):
-            info = NodoUsuario.NodoUsuario(Nombre, Contrasenia, NameUsuario, Direccion, Telefono, TarjetaCredito, DireccionActual)
+    def insertarVuelo(self, LugarLlegada, HoraSalida, FechaSalida, HoraLlegada, FechaLlegada, CantPrimeraClase, CostoPrimeraClase, CantTurista, CostoTurista, CantEjecutiva, CostoEjecutiva, EstadoVuelo):
+        IdUnico = self.identi
+        if (self.verificarIdentificador(IdUnico,self.Raiz)==False):
+            info = NodoVuelo.NodoVuelo(IdUnico, LugarLlegada, HoraSalida, FechaSalida, HoraLlegada, FechaLlegada, CantPrimeraClase, CostoPrimeraClase, CantTurista, CostoTurista, CantEjecutiva, CostoEjecutiva, EstadoVuelo)
             self.Raiz = self.insertarBalanceado(self.Raiz,info)
-            print "Ingresado con exito!!!"
+            print "Vuelo Ingresado con exito!!!"
         else:
-            print "Error Nickname repetido"
+            print "Error Id de vuelo repetido"
 
 
     def insertarBalanceado(self,nodoRaiz, nodoInsertar):
@@ -77,10 +76,12 @@ class ArbolAvlUsuario:
         info = nodoInsertar
         if self.arbolEstaVacio(nodoRaiz):
             nodoRaiz = info
-            print "Se inserto un nuevo Usuario"
+            print "Se inserto un nuevo Vuelo"
+            self.identi = self.identi +1
+            self.cantidad = self.cantidad +1
             self.Altur = True
         else:
-            if nodoInsertar.NameUsuario < nodoRaiz.NameUsuario:
+            if nodoInsertar.IdUnico < nodoRaiz.IdUnico:
                 nodoRaiz.Izquierda = self.insertarBalanceado(nodoRaiz.Izquierda,nodoInsertar)
                 if self.Altur:
                     if nodoRaiz.factorBalance==1:
@@ -98,7 +99,7 @@ class ArbolAvlUsuario:
                             nodoRaiz = self.RotacionIzquierdaDerecha(nodoRaiz,N1)
                         self.Altur = False
             else:
-                if nodoInsertar.NameUsuario > nodoRaiz.NameUsuario:
+                if nodoInsertar.IdUnico > nodoRaiz.IdUnico:
                     nodoRaiz.Derecha = self.insertarBalanceado(nodoRaiz.Derecha,nodoInsertar)
                     if self.Altur:
                         if nodoRaiz.factorBalance==-1:
@@ -114,7 +115,7 @@ class ArbolAvlUsuario:
                                 nodoRaiz = self.RotacionDerechaIzquierda(nodoRaiz,N1)
                             self.Altur=False
                 else:
-                    print "Error: No pueden haber 2 nickname iguales"
+                    print "Error: No pueden haber 2 identificadores vuelos iguales"
                     self.Altur = False
         return nodoRaiz
 
@@ -223,7 +224,7 @@ class ArbolAvlUsuario:
             return
         else:
             ##aca lo puedo meter en un arraylist
-            print Nodo.NameUsuario + " \n"
+            print "id "+Nodo.IdUnico+"llega a: "+Nodo.LugarLlegada + " Lugar salida "+ Nodo.LugarSalida + " \n"
             self.PreOrdenAvl(Nodo.Izquierda)
             self.PreOrdenAvl(Nodo.Derecha)
 
@@ -233,7 +234,7 @@ class ArbolAvlUsuario:
             return
         else:
             self.InordenAvl(Nodo.Izquierda)
-            print Nodo.NameUsuario +" \n"
+            print "id "+Nodo.IdUnico+"llega a: "+Nodo.LugarLlegada + " Lugar salida "+ Nodo.LugarSalida + " \n"
             ##aca lo puedo meter en un arraylist
             self.InordenAvl(Nodo.Derecha)
 
@@ -244,69 +245,62 @@ class ArbolAvlUsuario:
         else:
             self.PostOrdenAvl(Nodo.Izquierda)
             self.PostOrdenAvl(Nodo.Derecha)
-            print Nodo.NameUsuario +" \n"
+            print "id "+Nodo.IdUnico+"llega a: "+Nodo.LugarLlegada + " Lugar salida "+ Nodo.LugarSalida + " \n"
             ##aca lo puedo meter a u arraylist
 
 
-    def LocalizarUsuario(self, nodoRaiz, nickk):
-        nickk=nickk.upper()
-        nic2 = ""
-        nic2 = nodoRaiz.NameUsuario
-        nic2 = nic2.upper()
+    def LocalizarVuelo(self, nodoRaiz, identificadorr):
+
+        nic2 = nodoRaiz.IdUnico
         if nodoRaiz==None:
             return None
-        elif nickk==nic2:
+        elif identificadorr==nic2:
             return nodoRaiz
-        elif nickk < nic2:
-            return self.LocalizarUsuario(nodoRaiz.Izquierda,nickk)
+        elif identificadorr < nic2:
+            return self.LocalizarVuelo(nodoRaiz.Izquierda,identificadorr)
         else:
-            return self.LocalizarUsuario(nodoRaiz.Derecha,nickk)
+            return self.LocalizarVuelo(nodoRaiz.Derecha,identificadorr)
 
 
-    def Buscar(self, nickBuscado):
-        dato =""
-        dato = nickBuscado
+    def Buscar(self, identific):
+        dato = identific
         if self.Raiz==None:
             return None
         else:
-            return self.LocalizarUsuario(self.Raiz,dato)
+            return self.LocalizarVuelo(self.Raiz,dato)
 
 
-    def filtrarUsuariosCategoria(self, Nodo, clasi):
-        clasi =clasi.upper()
+    def filtrarVuelosLlegada(self, Nodo, llegada):
+        llegada=llegada.upper()
         if Nodo!=None:
             clas = ""
-            clas = Nodo.Categoria
-            clas=clas.upper()
-            if clasi==clas:
+            clas = Nodo.LugarLlegada
+            clas =clas.upper()
+            if llegada==clas:
                 self.setNodito(Nodo);
-                self.filtrarUsuariosCategoria(Nodo.Derecha,clasi)
-                self.filtrarUsuariosCategoria(Nodo.Izquierda, clasi)
+                self.filtrarVuelosLlegada(Nodo.Derecha,llegada)
+                self.filtrarVuelosLlegada(Nodo.Izquierda, llegada)
 
             else:
-                self.filtrarUsuariosCategoria(Nodo.Derecha,clasi)
-                self.filtrarUsuariosCategoria(Nodo.Izquierda,clasi)
+                self.filtrarVuelosLlegada(Nodo.Derecha,llegada)
+                self.filtrarVuelosLlegada(Nodo.Izquierda,llegada)
 
 
-    def verContactos(self, tipoUsuario):
+    def verVuelos(self, llega):
         while(self.getNodito()!=None):
-            self.filtrarUsuariosCategoria(self.getRaiz(),tipoUsuario)
-            print "Este nodo esta en esa categoria "+ self.getNodito.verNodoUsuario
+            self.filtrarVuelosLlegada(self.getRaiz(),llega)
+            print "Este nodo esta en esa categoria "+ self.getNodito().verNodoVuelo
 
 
-    def eliminarContacto(self, nickEliminar):
-        nickEliminar= nickEliminar.upper()
-        valor = nickEliminar
+    def eliminarContacto(self, idVueloEliminar):
+        valor = idVueloEliminar
         flag = True
         ##raiz = self.borrarAvl(self.Raiz,valor,flag)
         self.Raiz = self.borrarAvl(self.Raiz,valor,flag)
 
 
     def borrarAvl(self, nodoR, clave, cambiarAltura):
-        cla =""
-        cla = nodoR.NameUsuario
-        cla=cla.upper()
-        clave=clave.upper()
+        cla = nodoR.IdUnico
         if nodoR==None:
             print "Nodo no encontrado"
         elif clave < cla:
@@ -344,7 +338,7 @@ class ArbolAvlUsuario:
             if cambiarAltur:
                 actual = self.Equilibrar2(actual,cambiarAltur)
         else:
-            N.NameUsuario = actual.NameUsuario
+            N.IdUnico = actual.IdUnico
             N = actual
             actual = actual.Izquierda
             N = None
@@ -391,42 +385,67 @@ class ArbolAvlUsuario:
         return N
 
 
-    def loguearUsuario(self, nickn, clavee):
-        seEncontro=False
-        datoss = nickn
+    def VerVuelosPorEstado(self, estadoVuelo):
+        dato =""
+        dato = estadoVuelo
         if self.Raiz==None:
-            seEncontro=False
+            return None
         else:
-            nodoooo = self.LocalizarUsuarioLoguear(self.Raiz,datoss,clavee)
-            if nodoooo==None:
-               seEncontro=False
+            return self.filtrarVuelosporSusEstados(self.Raiz,dato)
+
+
+    def filtrarVuelosporSusEstados(self, Nodo, estado):
+        estado=estado.upper()
+        if Nodo!=None:
+            clas = ""
+            clas = Nodo.EstadoVuelo
+            clas = clas.upper()
+            if estado==clas:
+                self.setNodito(Nodo);
+                nnodoo=self.getNodito()
+                print nnodoo.VerNodoVuelo()
+                ##de este nodo puedo crear una copia e ir metiendolo a una lista
+                self.filtrarVuelosporSusEstados(Nodo.Derecha,estado)
+                self.filtrarVuelosporSusEstados(Nodo.Izquierda, estado)
+
             else:
-                seEncontro=True
-        if seEncontro==False:
-            print "No se pudo loguear con los datos nickname: "+ nickn +" Password:" +clavee
-        else:
-            print "Felicidades se a podido loguear con user: "+nickn + " y Password: " + clavee
-
-        return seEncontro
+                self.filtrarVuelosporSusEstados(Nodo.Derecha,estado)
+                self.filtrarVuelosporSusEstados(Nodo.Izquierda,estado)
 
 
-    def LocalizarUsuarioLoguear(self, nodoRaiz, nickk, claveee):
-
-        if nodoRaiz==None:
+    def VerVuelosPorDestino(self, destino):
+        dato =""
+        dato = destino
+        if self.Raiz==None:
             return None
         else:
-            nic2 = nodoRaiz.NameUsuario
-            codd = nodoRaiz.Contrasenia
-        if nodoRaiz==None:
-            return None
-        elif nickk==nic2 and claveee==codd:
-            print "*************************************************************************************"
-            print "*************Felicidades aca se comprobo el nickname y la clave**********************"
-            print "**** Te logueaste con NickName:  "+nickk+"  y Password: "+claveee +"  ***************"
-            print "*************************************************************************************"
-            return nodoRaiz
-        elif nickk < nic2:
-            return self.LocalizarUsuarioLoguear(nodoRaiz.Izquierda,nickk,claveee)
-        else:
-            return self.LocalizarUsuarioLoguear(nodoRaiz.Derecha,nickk,claveee)
+            return self.filtrarVuelosporSuDestino(self.Raiz,dato)
+
+
+    def filtrarVuelosporSuDestino(self, Nodo, destino):
+        destino=destino.upper()
+        if Nodo!=None:
+            clas = ""
+            clas = Nodo.LugarLlegada
+            clas = clas.upper()
+            if destino==clas:
+                self.setNodito(Nodo);
+                nnodoo=self.getNodito()
+                print nnodoo.VerNodoVuelo()
+                ##de este nodo puedo crear una copia e ir metiendolo a una lista
+                self.filtrarVuelosporSuDestino(Nodo.Derecha,destino)
+                self.filtrarVuelosporSuDestino(Nodo.Izquierda, destino)
+
+            else:
+                self.filtrarVuelosporSuDestino(Nodo.Derecha,destino)
+                self.filtrarVuelosporSuDestino(Nodo.Izquierda,destino)
+
+
+
+
+
+
+
+
+
 
